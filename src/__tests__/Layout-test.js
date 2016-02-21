@@ -2444,6 +2444,21 @@ describe('Layout', function() {
       ]}
     );
   });
+
+  it('should layout child whose cross axis is undefined and whose alignSelf is stretch', function() {
+    testLayout(
+      {style: {flexDirection: 'row'}, children: [
+          {style: {marginTop: 10, marginLeft: 10, alignSelf: 'flex-start'}},
+          {style: {width: 1, alignSelf: 'stretch'}},
+          {style: {height: 150}}
+      ]},
+      {width: 11, height: 150, top: 0, left: 0, children: [
+        {width: 0, height: 0, top: 10, left: 10},
+        {width: 1, height: 150, top: 0, left: 10},
+        {width: 0, height: 150, top: 0, left: 11}
+      ]}
+    );
+  });
 });
 
 describe('Layout alignContent', function() {

@@ -749,7 +749,7 @@ var computeLayout = (function() {
         if (isSimpleStackCross &&
             (getPositionType(child) !== CSS_POSITION_RELATIVE ||
                 (alignItem !== CSS_ALIGN_STRETCH && alignItem !== CSS_ALIGN_FLEX_START) ||
-                !isStyleDimDefined(child, crossAxis))) {
+                (alignItem == CSS_ALIGN_STRETCH && !isCrossDimDefined))) {
           isSimpleStackCross = false;
           firstComplexCross = i;
         }
@@ -961,7 +961,7 @@ var computeLayout = (function() {
             if (alignItem === CSS_ALIGN_STRETCH) {
               // You can only stretch if the dimension has not already been defined
               // previously.
-              if (!isStyleDimDefined(child, crossAxis) && !isMeasureDefined(child)) {
+              if (!isStyleDimDefined(child, crossAxis)) {
                 var/*float*/ dimCrossAxis = child.layout[dim[crossAxis]];
                 child.layout[dim[crossAxis]] = fmaxf(
                   boundAxis(child, crossAxis, containerCrossAxis -
@@ -970,10 +970,9 @@ var computeLayout = (function() {
                   getPaddingAndBorderAxis(child, crossAxis)
                 );
 
-                // if the size has changed we need to re-layout the child
-                if (dimCrossAxis != child.layout[dim[crossAxis]] && 0 < child.children.length) {
-
-                  // reset child margins before re-layout as they are added back in layoutNode and would be doubled
+                // If the size has changed, and this child has children we need to re-layout this child
+                if (dimCrossAxis != child.layout[dim[crossAxis]] && child.children.length > 0) {
+                  // Reset child margins before re-layout as they are added back in layoutNode and would be doubled
                   child.layout[leading[mainAxis]] -= getLeadingMargin(child, mainAxis) +
                     getRelativePosition(child, mainAxis);
                   child.layout[trailing[mainAxis]] -= getTrailingMargin(child, mainAxis) +
